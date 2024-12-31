@@ -1,12 +1,12 @@
 package com.example.skyreserve.controller;
 
+import com.example.skyreserve.dto.ReservationDTO;
 import com.example.skyreserve.entity.Reservation;
 import com.example.skyreserve.service.ReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -19,25 +19,26 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
+    @PostMapping
+    public ResponseEntity<?> createReservation(@RequestBody ReservationDTO reservationDTO) {
+        try {
+            ReservationDTO created = reservationService.createReservation(reservationDTO);
+            return new ResponseEntity<>(created, HttpStatus.CREATED);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Seat is already reserved.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @GetMapping
-    public List<Reservation> getAllReservations() {
-        return reservationService.getAllReservations();
+    public ResponseEntity<List<ReservationDTO>> getAllReservations() {
+        return ResponseEntity.ok(reservationService.getAllReservations());
     }
 
     @GetMapping("/{id}")
-    public Reservation getReservationById(@PathVariable Long id) {
-        return reservationService.getReservationById(id);
-    }
-
-    @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        Reservation created = reservationService.createReservation(reservation);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public Reservation updateReservation(@PathVariable Long id, @RequestBody Reservation updatedReservation) {
-        return reservationService.updateReservation(id, updatedReservation);
+    public ResponseEntity<ReservationDTO> getReservationById(@PathVariable Long id) {
+        return ResponseEntity.ok(reservationService.getReservationById(id));
     }
 
     @DeleteMapping("/{id}")
@@ -46,18 +47,5 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Reservation> getReservationsByUserId(@PathVariable Long userId) {
-        return reservationService.getReservationsByUserId(userId);
-    }
-
-    @GetMapping("/flight/{flightId}")
-    public List<Reservation> getReservationsByFlightId(@PathVariable Long flightId) {
-        return reservationService.getReservationsByFlightId(flightId);
-    }
-
-    @GetMapping("/seat/{seatId}")
-    public List<Reservation> getReservationsBySeatId(@PathVariable Long seatId) {
-        return reservationService.getReservationsBySeatId(seatId);
-    }
 }
+

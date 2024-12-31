@@ -1,8 +1,8 @@
 package com.example.skyreserve.controller;
 
+import com.example.skyreserve.dto.UserDTO;
 import com.example.skyreserve.entity.User;
 import com.example.skyreserve.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,24 +19,28 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User created = userService.createUser(user);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    @PostMapping("/create")
+    public ResponseEntity<String> createUser(@RequestBody UserDTO userDTO) {
+        if (!"USER".equalsIgnoreCase(userDTO.getRole())) {
+            return ResponseEntity.badRequest().body("Only 'USER' role can be created via this endpoint.");
+        }
+        userService.createUser(userDTO.getUsername(), null, userDTO.getRole());
+        return ResponseEntity.ok("User created successfully!");
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return userService.updateUser(id, updatedUser);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO updatedUser) {
+        UserDTO updated = userService.updateUser(id, new User(updatedUser.getUsername(), null, updatedUser.getRole()));
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")

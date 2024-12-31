@@ -27,7 +27,7 @@ public class Reservation {
     private LocalDateTime reservationDate = LocalDateTime.now();
 
     @Column(nullable = false)
-    private String status; // "RESERVED", "PAID", "CANCELLED" vb.
+    private String status; // RESERVED, PAID, CANCELLED
 
     public Reservation() {}
 
@@ -39,48 +39,50 @@ public class Reservation {
         this.reservationDate = LocalDateTime.now();
     }
 
+    // Getter and Setter Methods
+
     public Long getId() {
         return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public Seat getSeat() {
-        return seat;
-    }
-
-    public LocalDateTime getReservationDate() {
-        return reservationDate;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Flight getFlight() {
+        return flight;
     }
 
     public void setFlight(Flight flight) {
         this.flight = flight;
     }
 
+    public Seat getSeat() {
+        return seat;
+    }
+
     public void setSeat(Seat seat) {
         this.seat = seat;
     }
 
+    public LocalDateTime getReservationDate() {
+        return reservationDate;
+    }
+
     public void setReservationDate(LocalDateTime reservationDate) {
         this.reservationDate = reservationDate;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {

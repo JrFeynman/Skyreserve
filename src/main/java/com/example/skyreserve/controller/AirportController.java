@@ -1,8 +1,7 @@
 package com.example.skyreserve.controller;
 
-import com.example.skyreserve.entity.Airport;
+import com.example.skyreserve.dto.AirportDTO;
 import com.example.skyreserve.service.AirportService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,24 +18,26 @@ public class AirportController {
     }
 
     @GetMapping
-    public List<Airport> getAllAirports() {
-        return airportService.getAllAirports();
+    public ResponseEntity<List<AirportDTO>> getAllAirports() {
+        return ResponseEntity.ok(airportService.getAllAirports());
     }
 
     @GetMapping("/{id}")
-    public Airport getAirportById(@PathVariable Long id) {
-        return airportService.getAirportById(id);
+    public ResponseEntity<AirportDTO> getAirportById(@PathVariable Long id) {
+        return ResponseEntity.ok(airportService.getAirportById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Airport> createAirport(@RequestBody Airport airport) {
-        Airport created = airportService.createAirport(airport);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public ResponseEntity<AirportDTO> createAirport(@RequestBody AirportDTO airportDTO) {
+        AirportDTO createdAirport = airportService.createAirport(airportDTO);
+        return ResponseEntity.status(201).body(createdAirport);
     }
 
     @PutMapping("/{id}")
-    public Airport updateAirport(@PathVariable Long id, @RequestBody Airport updatedAirport) {
-        return airportService.updateAirport(id, updatedAirport);
+    public ResponseEntity<AirportDTO> updateAirport(
+            @PathVariable Long id, @RequestBody AirportDTO updatedAirportDTO) {
+        AirportDTO updatedAirport = airportService.updateAirport(id, updatedAirportDTO);
+        return ResponseEntity.ok(updatedAirport);
     }
 
     @DeleteMapping("/{id}")

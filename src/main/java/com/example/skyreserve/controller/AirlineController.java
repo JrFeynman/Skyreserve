@@ -1,8 +1,7 @@
 package com.example.skyreserve.controller;
 
-import com.example.skyreserve.entity.Airline;
+import com.example.skyreserve.dto.AirlineDTO;
 import com.example.skyreserve.service.AirlineService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,24 +18,25 @@ public class AirlineController {
     }
 
     @GetMapping
-    public List<Airline> getAllAirlines() {
-        return airlineService.getAllAirlines();
+    public ResponseEntity<List<AirlineDTO>> getAllAirlines() {
+        return ResponseEntity.ok(airlineService.getAllAirlines());
     }
 
     @GetMapping("/{id}")
-    public Airline getAirlineById(@PathVariable Long id) {
-        return airlineService.getAirlineById(id);
+    public ResponseEntity<AirlineDTO> getAirlineById(@PathVariable Long id) {
+        return ResponseEntity.ok(airlineService.getAirlineById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Airline> createAirline(@RequestBody Airline airline) {
-        Airline created = airlineService.createAirline(airline);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public ResponseEntity<AirlineDTO> createAirline(@RequestBody AirlineDTO airlineDTO) {
+        AirlineDTO createdAirline = airlineService.createAirline(airlineDTO);
+        return ResponseEntity.status(201).body(createdAirline);
     }
 
     @PutMapping("/{id}")
-    public Airline updateAirline(@PathVariable Long id, @RequestBody Airline updatedAirline) {
-        return airlineService.updateAirline(id, updatedAirline);
+    public ResponseEntity<AirlineDTO> updateAirline(@PathVariable Long id, @RequestBody AirlineDTO updatedAirlineDTO) {
+        AirlineDTO updatedAirline = airlineService.updateAirline(id, updatedAirlineDTO);
+        return ResponseEntity.ok(updatedAirline);
     }
 
     @DeleteMapping("/{id}")

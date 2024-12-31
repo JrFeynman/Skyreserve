@@ -11,10 +11,9 @@ import java.util.Optional;
 
 public interface FlightRepository extends JpaRepository<Flight, Long> {
     Optional<Flight> findByFlightNumber(String flightNumber);
-
-    // Özel sorgu: Origin ve Destination airport koduna ve departure time sonrası uçuşlara göre arama
-    @Query("SELECT f FROM Flight f WHERE f.originAirport.code = :originCode AND f.destinationAirport.code = :destCode AND f.departureTime > :departureTime")
-    List<Flight> searchFlights(@Param("originCode") String originCode,
-                               @Param("destCode") String destCode,
-                               @Param("departureTime") LocalDateTime departureTime);
+    Optional<Flight> findById(Long id);
+    @Query("SELECT f FROM Flight f WHERE LOWER(f.originAirport.city) = LOWER(:originCity) AND LOWER(f.destinationAirport.city) = LOWER(:destinationCity)")
+    List<Flight> searchByCities(String originCity, String destinationCity);
 }
+
+

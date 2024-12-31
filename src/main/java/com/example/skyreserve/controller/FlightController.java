@@ -1,12 +1,10 @@
 package com.example.skyreserve.controller;
 
-import com.example.skyreserve.entity.Flight;
+import com.example.skyreserve.dto.FlightDTO;
 import com.example.skyreserve.service.FlightService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -19,25 +17,29 @@ public class FlightController {
         this.flightService = flightService;
     }
 
-    @GetMapping
-    public List<Flight> getAllFlights() {
-        return flightService.getAllFlights();
-    }
-
-    @GetMapping("/{id}")
-    public Flight getFlightById(@PathVariable Long id) {
-        return flightService.getFlightById(id);
-    }
-
     @PostMapping
-    public ResponseEntity<Flight> createFlight(@RequestBody Flight flight) {
-        Flight created = flightService.createFlight(flight);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public ResponseEntity<FlightDTO> addFlight(@RequestBody FlightDTO flightDTO) {
+        FlightDTO savedFlight = flightService.addFlight(flightDTO);
+        return ResponseEntity.status(201).body(savedFlight);
     }
 
-    @PutMapping("/{id}")
-    public Flight updateFlight(@PathVariable Long id, @RequestBody Flight updatedFlight) {
-        return flightService.updateFlight(id, updatedFlight);
+    @GetMapping
+    public ResponseEntity<List<FlightDTO>> getAllFlights() {
+        return ResponseEntity.ok(flightService.getAllFlights());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<FlightDTO> getFlightById(@PathVariable Long id) {
+        FlightDTO flightDTO = flightService.getFlightById(id);
+        return ResponseEntity.ok(flightDTO);
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<FlightDTO>> searchFlights(
+            @RequestParam String originCity,
+            @RequestParam String destinationCity) {
+        List<FlightDTO> flights = flightService.searchFlightsByCities(originCity, destinationCity);
+        return ResponseEntity.ok(flights);
     }
 
     @DeleteMapping("/{id}")
@@ -45,13 +47,5 @@ public class FlightController {
         flightService.deleteFlight(id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/search")
-    public List<Flight> searchFlights(@RequestParam String originCode,
-                                      @RequestParam String destCode,
-                                      @RequestParam String departureAfter) {
-        // departureAfter parametresini LocalDateTime'e parse edelim.
-        LocalDateTime dt = LocalDateTime.parse(departureAfter);
-        return flightService.searchFlights(originCode, destCode, dt);
-    }
 }
+
